@@ -32,6 +32,11 @@ class NoReCaptchaField(forms.CharField):
 
         See: https://developers.google.com/recaptcha/docs/display
         """
+        if getattr(settings, 'NORECAPTCHA_TESTING', None):
+            # use googles keys for testing: https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-test-with-recaptcha-v2-how-should-i-do
+            site_key = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+            secret_key = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'
+
         site_key = site_key if site_key else \
             settings.NORECAPTCHA_SITE_KEY
         self.secret_key = secret_key if secret_key else \
@@ -39,7 +44,10 @@ class NoReCaptchaField(forms.CharField):
 
         self.widget = NoReCaptchaWidget(
             site_key=site_key, gtag_attrs=gtag_attrs, js_params=js_params)
-        self.required = True
+
+        assert kwargs.get('required') is not True, \
+            'Do not set the `required` flag on a recaptcha field.'
+        kwargs['required'] = False
         super(NoReCaptchaField, self).__init__(*args, **kwargs)
 
     def get_remote_ip(self):
@@ -60,8 +68,13 @@ class NoReCaptchaField(forms.CharField):
             f = f.f_back
 
     def clean(self, value):
+        if getattr(settings, 'NORECAPTCHA_TESTING', None) is True:
+            return super(NoReCaptchaField, self).clean(value)
+
         super(NoReCaptchaField, self).clean(value)
         g_nocaptcha_response_value = smart_unicode(value)
+
+        # todo: is  this still needed or can we remove it?
         if os.environ.get('NORECAPTCHA_TESTING', None) == 'True' \
                 and g_nocaptcha_response_value == 'PASSED':
             return value

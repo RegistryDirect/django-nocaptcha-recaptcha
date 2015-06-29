@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ImaginaryLandscape/django-nocaptcha-recaptcha.svg?branch=master)](https://travis-ci.org/ImaginaryLandscape/django-nocaptcha-recaptcha)
+Modification to support easier testing (see bottom of this readme)
 
 # SUMMARY
 
@@ -95,3 +95,7 @@ To use it, run the following:
 # TESTING
 
     python setup.py test
+
+## Running tests on your project
+To run tests, simply set `NORECAPTCHA_TESTING = True` in your settings. You don't have to pass anything in the post on submit, neither do you have to click the captcha.
+It will simply validate in any case.
