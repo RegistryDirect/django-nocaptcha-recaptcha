@@ -99,3 +99,7 @@ To use it, run the following:
 ## Running tests on your project
 To run tests, simply set `NORECAPTCHA_TESTING = True` in your settings. You don't have to pass anything in the post on submit, neither do you have to click the captcha.
 It will simply validate in any case.
+
+### open questions
+* why does google supply keys for testing? (https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-test-with-recaptcha-v2-how-should-i-do)
+* it might be possible, when using those keys, to click the captcha with selenium and the captcha will always validate. then there wouldn't be a need to implement the testing case in the clean method.
